@@ -1,0 +1,269 @@
+# Hand-written Rosé Pine "line" bar for Zebar's legacy YAML config.
+# Palette: https://rosepinetheme.com/palette/ingredients/
+
+window/bar:
+  providers: ['self']
+  width: '{{ self.args.MONITOR_WIDTH }}'
+  height: '42'
+  position_x: '{{ self.args.MONITOR_X }}'
+  position_y: '{{ self.args.MONITOR_Y }}'
+  z_order: 'always_on_top'
+  shown_in_taskbar: false
+  resizable: false
+
+  global_styles: |
+    @import "https://www.nerdfonts.com/assets/css/webfont.css";
+
+    * {
+      box-sizing: border-box;
+    }
+
+    button {
+      font: inherit;
+    }
+
+  styles: |
+    /* Rosé Pine */
+    --base: #191724;
+    --surface: #1f1d2e;
+    --overlay: #26233a;
+    --muted: #6e6a86;
+    --subtle: #908caa;
+    --text: #e0def4;
+    --love: #eb6f92;
+    --gold: #f6c177;
+    --rose: #ebbcba;
+    --pine: #31748f;
+    --foam: #9ccfd8;
+    --iris: #c4a7e7;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    height: 100%;
+    padding: 0 14px;
+    color: var(--text);
+    background: rgba(25, 23, 36, 0.94);
+    border-bottom: 2px solid var(--overlay);
+    font-family: "CaskaydiaCove Nerd Font", "JetBrainsMono Nerd Font", ui-monospace, monospace;
+    font-size: 12px;
+    line-height: 1;
+
+    i {
+      color: var(--rose);
+      font-size: 14px;
+    }
+
+    .line {
+      width: 20px;
+      height: 1px;
+      background: var(--muted);
+      opacity: 0.8;
+    }
+
+  group/left:
+    styles: |
+      display: flex;
+      align-items: center;
+      min-width: 0;
+
+    template/logo:
+      styles: |
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-right: 13px;
+
+        i {
+          color: var(--iris);
+        }
+      template: |
+        <i class="nf nf-md-flower_poppy"></i>
+        <span class="line"></span>
+
+    template/glazewm_workspaces:
+      providers: ['glazewm']
+      events:
+        - type: 'click'
+          fn_path: 'script.js#focusWorkspace'
+          selector: '.workspace'
+      styles: |
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        .workspace {
+          position: relative;
+          min-width: 25px;
+          height: 27px;
+          padding: 0 7px;
+          color: var(--subtle);
+          background: transparent;
+          border: 0;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: color 120ms ease, background 120ms ease;
+        }
+
+        .workspace::after {
+          content: "";
+          position: absolute;
+          right: 7px;
+          bottom: 2px;
+          left: 7px;
+          height: 2px;
+          border-radius: 2px;
+          background: transparent;
+          transition: background 120ms ease;
+        }
+
+        .workspace.displayed {
+          color: var(--text);
+        }
+
+        .workspace.focused {
+          color: var(--rose);
+          background: var(--highlight-low, #21202e);
+        }
+
+        .workspace.focused::after {
+          background: var(--love);
+        }
+
+        .workspace:hover {
+          color: var(--iris);
+          background: var(--overlay);
+        }
+      template: |
+        @for (workspace of glazewm.currentWorkspaces) {
+          <button
+            class="workspace {{ workspace.hasFocus ? 'focused' : '' }} {{ workspace.isDisplayed ? 'displayed' : '' }}"
+            id="{{ workspace.name }}"
+          >
+            {{ workspace.displayName ?? workspace.name }}
+          </button>
+        }
+
+  group/center:
+    styles: |
+      justify-self: center;
+      display: flex;
+      align-items: center;
+
+    template/clock:
+      providers: ['date']
+      styles: |
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text);
+        letter-spacing: 0.3px;
+
+        .date {
+          color: var(--subtle);
+        }
+
+        .time {
+          color: var(--rose);
+          font-weight: 700;
+        }
+      template: |
+        <span class="line"></span>
+        <span class="date">{{ date.toFormat(date.now, 'EEE, MMM d') }}</span>
+        <span class="time">{{ date.toFormat(date.now, 'h:mm a') }}</span>
+        <span class="line"></span>
+
+  group/right:
+    styles: |
+      justify-self: end;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+
+      .template {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        white-space: nowrap;
+      }
+
+    template/glazewm_other:
+      providers: ['glazewm']
+      styles: |
+        .binding-mode {
+          color: var(--gold);
+          text-transform: uppercase;
+        }
+
+        .tiling-direction {
+          color: var(--iris);
+          margin: 0;
+        }
+      template: |
+        @for (bindingMode of glazewm.bindingModes) {
+          <span class="binding-mode">{{ bindingMode.displayName ?? bindingMode.name }}</span>
+        }
+        @if (glazewm.tilingDirection === 'horizontal') {
+          <i class="tiling-direction nf nf-md-swap_horizontal"></i>
+        } @else {
+          <i class="tiling-direction nf nf-md-swap_vertical"></i>
+        }
+
+    template/network:
+      providers: ['network']
+      styles: |
+        i { color: var(--foam); }
+      template: |
+        @if (network.defaultInterface?.type === 'ethernet') {
+          <i class="nf nf-md-ethernet_cable"></i>
+          <span>LAN</span>
+        } @else if (network.defaultInterface?.type === 'wifi') {
+          @if (network.defaultGateway?.signalStrength >= 75) {<i class="nf nf-md-wifi_strength_4"></i>}
+          @else if (network.defaultGateway?.signalStrength >= 50) {<i class="nf nf-md-wifi_strength_3"></i>}
+          @else if (network.defaultGateway?.signalStrength >= 25) {<i class="nf nf-md-wifi_strength_2"></i>}
+          @else {<i class="nf nf-md-wifi_strength_1"></i>}
+          <span>{{ network.defaultGateway?.ssid }}</span>
+        } @else {
+          <i class="nf nf-md-wifi_strength_off_outline"></i>
+        }
+
+    template/memory:
+      providers: ['memory']
+      styles: |
+        i { color: var(--pine); }
+      template: |
+        <i class="nf nf-fae-chip"></i>
+        <span>{{ Math.round(memory.usage) }}%</span>
+
+    template/cpu:
+      providers: ['cpu']
+      styles: |
+        i { color: var(--iris); }
+        .high-usage { color: var(--love); }
+      template: |
+        <i class="nf nf-oct-cpu"></i>
+        @if (cpu.usage > 85) {
+          <span class="high-usage">{{ Math.round(cpu.usage) }}%</span>
+        } @else {
+          <span>{{ Math.round(cpu.usage) }}%</span>
+        }
+
+    template/battery:
+      providers: ['battery']
+      styles: |
+        i { color: var(--gold); }
+        .low { color: var(--love); }
+      template: |
+        @if (battery.isCharging) {
+          <i class="nf nf-md-power_plug"></i>
+        } @else if (battery.chargePercent > 75) {
+          <i class="nf nf-fa-battery_4"></i>
+        } @else if (battery.chargePercent > 50) {
+          <i class="nf nf-fa-battery_3"></i>
+        } @else if (battery.chargePercent > 25) {
+          <i class="nf nf-fa-battery_2"></i>
+        } @else {
+          <i class="nf nf-fa-battery_1 low"></i>
+        }
+        <span class="{{ battery.chargePercent <= 20 ? 'low' : '' }}">{{ Math.round(battery.chargePercent) }}%</span>
+

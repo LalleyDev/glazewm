@@ -1,0 +1,202 @@
+@import 'https://www.nerdfonts.com/assets/css/webfont.css';
+
+:root {
+  --base: #191724;
+  --surface: #1f1d2e;
+  --overlay: #26233a;
+  --muted: #6e6a86;
+  --subtle: #908caa;
+  --text: #e0def4;
+  --love: #eb6f92;
+  --gold: #f6c177;
+  --rose: #ebbcba;
+  --pine: #31748f;
+  --foam: #9ccfd8;
+  --iris: #c4a7e7;
+  --highlight-low: #21202e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  color: var(--text);
+  font: 12px/1 "CaskaydiaCove Nerd Font", "JetBrainsMono Nerd Font", ui-monospace, monospace;
+}
+
+button {
+  color: inherit;
+  font: inherit;
+}
+
+.bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0 14px;
+  background: rgb(25 23 36 / 94%);
+  border-bottom: 2px solid var(--overlay);
+  box-shadow: inset 0 -1px 0 rgb(235 188 186 / 12%);
+  user-select: none;
+}
+
+.left,
+.right,
+.clock,
+.desktop-switcher,
+.brand,
+.stat {
+  display: flex;
+  align-items: center;
+}
+
+.left {
+  min-width: 0;
+}
+
+.brand {
+  min-width: 0;
+  max-width: 340px;
+}
+
+.focused-app {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.right {
+  justify-self: end;
+  gap: 15px;
+}
+
+.center-stage {
+  position: relative;
+  justify-self: center;
+  width: 320px;
+  height: 30px;
+  perspective: 500px;
+}
+
+.center-face {
+  position: absolute;
+  inset: 0;
+  justify-content: center;
+  backface-visibility: hidden;
+  transition: opacity 450ms ease, transform 550ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: center;
+}
+
+.clock {
+  justify-self: center;
+  gap: 10px;
+  color: var(--rose);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  opacity: 1;
+  transform: translateY(0) rotateX(0deg);
+}
+
+.desktop-switcher {
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(15px) rotateX(-85deg);
+}
+
+.center-stage.show-workspaces .clock,
+.center-stage:hover .clock {
+  opacity: 0;
+  transform: translateY(-15px) rotateX(85deg);
+}
+
+.center-stage.show-workspaces .desktop-switcher,
+.center-stage:hover .desktop-switcher {
+  opacity: 1;
+  transform: translateY(0) rotateX(0deg);
+}
+
+.desktop-numbers {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.desktop-numbers button {
+  min-width: 23px;
+  height: 24px;
+  padding: 0 6px;
+  color: var(--subtle);
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.desktop-numbers button:hover {
+  color: var(--iris);
+  background: var(--overlay);
+}
+
+.desktop-numbers button.active {
+  color: var(--base);
+  background: var(--rose);
+  font-weight: 700;
+}
+
+.brand {
+  gap: 9px;
+  margin-right: 13px;
+  color: var(--iris);
+  font-size: 15px;
+}
+
+.line {
+  width: 20px;
+  height: 1px;
+  background: var(--muted);
+  opacity: 0.8;
+}
+
+.stat {
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.network i { color: var(--foam); }
+.memory i { color: var(--pine); }
+.cpu i { color: var(--iris); }
+.battery i { color: var(--gold); }
+.danger,
+.danger i { color: var(--love); }
+
+.direction,
+.mode {
+  padding: 5px 7px;
+  background: var(--overlay);
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.direction {
+  color: var(--iris);
+}
+
+.mode {
+  color: var(--gold);
+  text-transform: uppercase;
+}

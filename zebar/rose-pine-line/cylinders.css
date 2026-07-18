@@ -1,0 +1,56 @@
+@import './styles.css';
+
+/* Floating three-cylinder variant. */
+.bar {
+  padding: 4px 10px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.left,
+.center-stage,
+.right {
+  height: 34px;
+  background: rgb(31 29 46 / 94%);
+  border: 1px solid rgb(144 140 170 / 22%);
+  border-radius: 999px;
+  box-shadow:
+    0 4px 14px rgb(0 0 0 / 26%),
+    inset 0 1px 0 rgb(224 222 244 / 6%);
+}
+
+.left {
+  justify-self: start;
+  max-width: 430px;
+  padding: 0 14px;
+}
+
+.center-stage {
+  width: 330px;
+  height: 34px;
+  padding: 0 12px;
+}
+
+.center-face {
+  inset: 1px 12px;
+}
+
+.right {
+  padding: 0 14px;
+}
+
+.brand {
+  margin-right: 0;
+}
+
+.direction,
+.mode {
+  background: var(--highlight-low);
+  border-radius: 999px;
+}
+
+.desktop-numbers button,
+.workspace {
+  border-radius: 999px;
+}
